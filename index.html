@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="CareerLink Assistant Academy training hub" />
+    <title>CareerLink Assistant Academy</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="CareerLink Assistant Academy home">
+        <span class="brand-mark">CL</span>
+        <span>CareerLink<br /><strong>Assistant Academy</strong></span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#modules">Training</a>
+        <a href="#help">Help Center</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">WELCOME TO YOUR LEARNING HUB</p>
+          <h1>Your CareerLink journey starts here.</h1>
+          <p class="hero-text">Short lessons, realistic practice, and quick answers to help you become confident in your role.</p>
+          <a class="button button-light" href="#modules">Start learning <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="hero-illustration" aria-hidden="true">
+          <div class="sparkle sparkle-one">✦</div>
+          <div class="sparkle sparkle-two">✦</div>
+          <div class="window-card">
+            <div class="window-top"><i></i><i></i><i></i></div>
+            <div class="window-line wide"></div>
+            <div class="window-line"></div>
+            <div class="window-chart"><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="progress-section" aria-labelledby="progress-title">
+        <div>
+          <p class="eyebrow">YOUR PROGRESS</p>
+          <h2 id="progress-title">Your learning path</h2>
+          <p class="muted">Complete each module at your own pace.</p>
+        </div>
+        <div class="progress-stat"><strong id="progress-percent">0%</strong><span>complete</span></div>
+        <div class="progress-track" aria-label="Training progress"><div id="progress-bar"></div></div>
+      </section>
+
+      <section class="modules-section" id="modules" aria-labelledby="modules-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">THE BASICS</p><h2 id="modules-title">Choose your next skill</h2></div>
+          <span class="module-count" id="module-count">0 of 3 complete</span>
+        </div>
+        <div class="module-grid" id="module-grid">
+        </div>
+      </section>
+
+      <section class="lesson-panel" id="lesson-panel" hidden tabindex="-1" aria-labelledby="lesson-title">
+        <button class="close-button" id="close-lesson" aria-label="Close lesson">×</button>
+        <p class="eyebrow" id="lesson-type">MODULE 01 · WELCOME VIDEO</p>
+
+<h2 id="lesson-title">Welcome to CareerLink</h2>
+
+<p id="lesson-description">
+  Start here to learn what CareerLink is, how your role supports the Career Center,
+  and what you can expect as a Program Assistant.
+</p>
+
+<div id="activity-content"></div></div>
+
+        <button class="button button-dark" id="complete-lesson">Mark lesson complete <span>✓</span></button>
+      </section>
+
+      <section class="help-section" id="help" aria-labelledby="help-title">
+        <div><p class="eyebrow">NEED A QUICK ANSWER?</p><h2 id="help-title">The Help Center</h2><p class="muted">Search common questions, troubleshooting tips, and guidance on when to ask for help.</p></div>
+        <form class="search-form" id="search-form"><label class="sr-only" for="search">Search the Help Center</label><input id="search" type="search" placeholder="Try “broken link” or “publish”" /><button class="button button-dark" type="submit">Search</button></form>
+        <p class="search-result" id="search-result" role="status"></p>
+      </section>
+    </main>
+    <footer><span>CareerLink Assistant Academy</span><span>Built for learning, practice, and confidence.</span></footer>
+    <script src="modules.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
