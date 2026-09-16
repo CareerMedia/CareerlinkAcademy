@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" >
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="CareerLink Assistant Academy training hub" />
@@ -23,7 +26,7 @@
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">WELCOME TO YOUR LEARNING HUB</p>
-          <h1>Your CareerLink journey starts here.</h1>
+          <h1>Your CareerLink Journey starts here.</h1>
           <p class="hero-text">Short lessons, realistic practice, and quick answers to help you become confident in your role.</p>
           <a class="button button-light" href="#modules">Start learning <span aria-hidden="true">→</span></a>
         </div>
@@ -45,7 +48,31 @@
         <div class="progress-stat"><strong id="progress-percent">0%</strong><span>complete</span></div>
         <div class="progress-track" aria-label="Training progress"><div id="progress-bar"></div></div>
       </section>
+      <section
+  class="certificate-section"
+  id="certificate-section"
+  hidden
+  aria-labelledby="certificate-title"
+>
+  <p class="eyebrow">TRAINING COMPLETE</p>
 
+  <h2 id="certificate-title">You completed CareerLink Assistant Academy</h2>
+
+  <p>
+    Congratulations! Your certificate is now available.
+  </p>
+
+  <div class="certificate-card">
+    <strong>Your completion certificate</strong>
+    <p>
+      A personalized, director-approved certificate will be generated here.
+    </p>
+
+    <button class="button button-dark" id="certificate-button" type="button">
+      Download certificate
+    </button>
+  </div>
+</section>
       <section class="modules-section" id="modules" aria-labelledby="modules-title">
         <div class="section-heading">
           <div><p class="eyebrow">THE BASICS</p><h2 id="modules-title">Choose your next skill</h2></div>

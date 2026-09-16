@@ -1,6 +1,7 @@
 const moduleKeys = modules.map((module) => module.id);
 const completed = new Set(JSON.parse(localStorage.getItem("careerlink-completed") || "[]"));
 const moduleGrid = document.querySelector("#module-grid");
+const certificateSection = document.querySelector("#certificate-section");
 const activityContent = document.querySelector("#activity-content");
 function renderActivity(module) {
   if (module.activityType === "video") {
@@ -470,10 +471,12 @@ const closeLessonButton = document.querySelector("#close-lesson");
 let lastTrigger = null;
 
 function updateProgress() {
-  const percent = Math.round((completed.size / moduleKeys.length) * 100);
+  const completedCount = moduleKeys.filter((key) => completed.has(key)).length;
+  const percent = Math.round((completedCount / moduleKeys.length) * 100);
   document.querySelector("#progress-percent").textContent = `${percent}%`;
   document.querySelector("#progress-bar").style.width = `${percent}%`;
-  document.querySelector("#module-count").textContent = `${completed.size} of ${moduleKeys.length} complete`;
+  document.querySelector("#module-count").textContent = `${completedCount} of ${moduleKeys.length} complete`;
+  certificateSection.hidden = completedCount !== moduleKeys.length;
   document.querySelectorAll("[data-module]").forEach((card) => {
     const key = card.dataset.module;
     const button = card.querySelector("button");
