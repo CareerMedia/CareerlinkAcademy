@@ -185,3 +185,31 @@
 .certificate-card p {
   color: var(--muted);
 }
+.brand-logo {
+  display: block;
+  width: 120px;
+  height: auto;
+  max-height: 48px;
+  object-fit: contain;
+}
+
+.brand-divider {
+  color: var(--line);
+  font-size: 1.4rem;
+  font-weight: 300;
+}
+
+.brand-name {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.brand-name {
+  position: relative;
+  top: 8px;
+}
+.brand-divider {
+  position: relative;
+  top: 8px;
+}
