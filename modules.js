@@ -4,7 +4,7 @@ const modules = [
     number: 1,
     title: "Welcome to CareerLink",
     type: "Welcome video",
-    label: "START HERE",
+    label: "HELLO MATADOR!",
     description:
       "Learn what CareerLink is, how your role supports the Career Center, and what to expect as a Program Assistant.",
     duration: "5 minutes",
@@ -21,7 +21,7 @@ const modules = [
     number: 2,
     title: "Setting Up Your CareerLink Workspace",
     type: "Video and checklist",
-    label: "ORIENTATION",
+    label: "FIRST STEPS",
     description:
       "Learn which tools and tabs support the different tasks you may complete.",
     duration: "5 minutes",
@@ -38,7 +38,7 @@ const modules = [
     number: 3,
     title: "Explore CareerLink",
     type: "Scavenger hunt",
-    label: "EXPLORE",
+    label: "EXPLORATION",
     description:
       "Find programs, departments, events, articles, resources, and taxonomy terms throughout CareerLink.",
     duration: "10-15 minutes",
@@ -54,7 +54,7 @@ const modules = [
     number: 4,
     title: "A Day in the Life of a CareerLink Assistant",
     type: "Timeline activity",
-    label: "YOUR ROLE",
+    label: "UNDERSTANDING YOUR ROLE",
     description:
       "Explore the daily, weekly, monthly, and special-request tasks that make up the role.",
     duration: "10 minutes",
@@ -70,7 +70,7 @@ const modules = [
     number: 5,
     title: "Events Tab",
     type: "Guided practice",
-    label: "CONTENT WORKFLOW",
+    label: "WHAT'S THE EVENT?",
     description:
     "Learn how to create and edit event listings while checking details before publishing.",
     duration: "10 minutes",
@@ -121,7 +121,7 @@ const modules = [
     number: 8,
     title: "Understanding CareerLink Taxonomy",
     type: "Matching activity",
-    label: "ORGANIZATION",
+    label: "LEARN CAREERLINK ORGANIZATION",
     description:
       "Learn why taxonomy matters and practice connecting resources to the right categories.",
     duration: "5 minutes",
@@ -138,7 +138,7 @@ const modules = [
     number: 9,
     title: "CareerLink Articles",
     type: "Practice activity",
-    label: "CONTENT WORKFLOW",
+    label: "BUILDING RESOURCES",
     description:
       "Learn how to update existing articles, create new ones, and connect external resources.",
     duration: "15 minutes",
@@ -155,7 +155,7 @@ const modules = [
     number: 10,
     title: "Fixing Broken Links",
     type: "Detective challenge",
-    label: "MAINTENANCE",
+    label: "PROBLEM WITH RESOURCES",
     description:
       "Learn how to investigate broken links, update pages, document your work, and escalate issues.",
     duration: "15 minutes",

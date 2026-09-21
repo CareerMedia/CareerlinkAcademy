@@ -429,43 +429,128 @@ else if (module.activityType === "detective-challenge") {
 }
 
 function renderModules() {
-  const iconColors = ["blue", "gold", "coral"];
 
-  moduleGrid.innerHTML = modules
-    .map((module, index) => {
-      const isAvailable =
-          module.id === "welcome" || module.id === "workspace" || module.id === "explore" || module.id === "day-in-life" || module.id === "events" || module.id === "academic-overview" || module.id === "academic-builder" || module.id === "taxonomy" || module.id === "articles" || module.id === "broken-links";
-      const buttonText = isAvailable ? "Open lesson" : "Activity coming next";
+  const phaseOrder = [
+    "Orientation",
+    "CareerLink Fundamentals",
+    "Content Workflows",
+    "Maintenance"
+  ];
+
+  const availableModules = new Set([
+    "welcome",
+    "workspace",
+    "explore",
+    "day-in-life",
+    "events",
+    "academic-overview",
+    "academic-builder",
+    "taxonomy",
+    "articles",
+    "broken-links"
+  ]);
+
+  function renderModuleCard(module) {
+    const isAvailable = availableModules.has(module.id);
+    const buttonText = isAvailable
+      ? "Open lesson"
+      : "Activity coming next";
+
+    return `
+      <article class="module-card" data-module="${module.id}">
+
+        <span class="tag">${module.label}</span>
+
+        <h3>${module.title}</h3>
+
+        <p>${module.description}</p>
+
+        <button
+          class="module-button"
+          data-complete="${module.id}"
+          aria-controls="lesson-panel"
+          aria-expanded="false"
+          ${isAvailable ? "" : "disabled"}
+        >
+          ${buttonText}
+          <span>${isAvailable ? "→" : "🔒"}</span>
+        </button>
+      </article>
+    `;
+  }
+
+  moduleGrid.innerHTML = phaseOrder
+    .map((phase) => {
+      const phaseModules = modules.filter(
+        (module) => module.phase === phase
+      );
+
+      if (phaseModules.length === 0) {
+        return "";
+      }
 
       return `
-        <article class="module-card" data-module="${module.id}">
-          <div class="module-icon ${iconColors[index % iconColors.length]}">
-            ${String(module.number).padStart(2, "0")}
+        <section class="phase-group" aria-labelledby="phase-${phase
+          .toLowerCase()
+          .replace(/\s+/g, "-")}">
+
+          <div class="phase-heading">
+            <p class="phase-kicker">LEARNING PHASE</p>
+            <h3 id="phase-${phase
+              .toLowerCase()
+              .replace(/\s+/g, "-")}">
+              ${phase}
+            </h3>
           </div>
 
-          <span class="tag">${module.label}</span>
+          <div class="phase-carousel">
+  <button
+    class="phase-arrow phase-arrow-left"
+    type="button"
+    aria-label="Scroll ${phase} modules left"
+  >
+    ‹
+  </button>
 
-          <h3>${module.title}</h3>
+  <div class="phase-grid" tabindex="0">
+    ${phaseModules.map(renderModuleCard).join("")}
+  </div>
 
-          <p>${module.description}</p>
-
-          <button
-            class="module-button"
-            data-complete="${module.id}"
-            aria-controls="lesson-panel"
-            aria-expanded="false"
-            ${isAvailable ? "" : "disabled"}
-          >
-            ${buttonText}
-            <span>${isAvailable ? "→" : "🔒"}</span>
-          </button>
-        </article>
+  <button
+    class="phase-arrow phase-arrow-right"
+    type="button"
+    aria-label="Scroll ${phase} modules right"
+  >
+    ›
+  </button>
+</div>
+        </section>
       `;
     })
     .join("");
 }
-
 renderModules();
+document.querySelectorAll(".phase-carousel").forEach((carousel) => {
+  const moduleStrip = carousel.querySelector(".phase-grid");
+  const leftArrow = carousel.querySelector(".phase-arrow-left");
+  const rightArrow = carousel.querySelector(".phase-arrow-right");
+
+  const scrollDistance = 320;
+
+  leftArrow.addEventListener("click", () => {
+    moduleStrip.scrollBy({
+      left: -scrollDistance,
+      behavior: "smooth"
+    });
+  });
+
+  rightArrow.addEventListener("click", () => {
+    moduleStrip.scrollBy({
+      left: scrollDistance,
+      behavior: "smooth"
+    });
+  });
+});
 const lessonPanel = document.querySelector("#lesson-panel");
 const closeLessonButton = document.querySelector("#close-lesson");
 let lastTrigger = null;
@@ -498,7 +583,7 @@ if (!selectedModule) {
 renderActivity(selectedModule);
 
 document.querySelector("#lesson-type").textContent =
-  `${String(selectedModule.number).padStart(2, "0")} · ${selectedModule.type.toUpperCase()}`;
+  selectedModule.type.toUpperCase();
 
 document.querySelector("#lesson-title").textContent =
   selectedModule.lessonTitle;
@@ -508,7 +593,14 @@ document.querySelector("#lesson-description").textContent =
 
     lastTrigger = button;
 
+    const selectedPhase = button.closest(".phase-group");
+
+if (selectedPhase) {
+  selectedPhase.after(lessonPanel);
+}
+
     lessonPanel.hidden = false;
+
     button.setAttribute("aria-expanded", "true");
 
     lessonPanel.scrollIntoView({
@@ -523,10 +615,17 @@ document.querySelector("#lesson-description").textContent =
 function closeLesson(){
   lessonPanel.hidden = true;
 
-  if (lastTrigger){
-    lastTrigger.setAttribute("aria-expanded","false");
-    lastTrigger.focus();
+  if (lastTrigger) {
+  lastTrigger.setAttribute("aria-expanded", "false");
+
+  const openCard = lastTrigger.closest(".module-card");
+
+  if (openCard) {
+    openCard.classList.remove("is-open");
   }
+
+  lastTrigger.focus();
+}
 }
 closeLessonButton.addEventListener("click", closeLesson);
 
