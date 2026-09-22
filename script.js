@@ -3,44 +3,31 @@ const completed = new Set(JSON.parse(localStorage.getItem("careerlink-completed"
 const moduleGrid = document.querySelector("#module-grid");
 const certificateSection = document.querySelector("#certificate-section");
 const activityContent = document.querySelector("#activity-content");
+
+/* =========================================
+   APP STATE AND DOM REFERENCES
+   ========================================= */
+
+   /*
+  Activity content editor note:
+
+  Each activity type below controls the lesson content
+  shown when a module opens.
+
+  The activityType value comes from modules.js.
+  If you create a new activity type, add a matching
+  renderer here.
+*/
 function renderActivity(module) {
+
+  // ===== MODULE 1: WELCOME VIDEO =====
   if (module.activityType === "video") {
-    activityContent.innerHTML = `
-      <div
-        class="video-placeholder"
-        role="group"
-        aria-label="${module.lessonTitle} video placeholder"
-      >
-        <div class="video-play" aria-hidden="true">▶</div>
-        <strong>${module.lessonTitle} video coming soon</strong>
-        <span>
-          Video playback, captions, and transcript will appear here.
-        </span>
-      </div>
+    const details = module.activityDetails || {
+    videoMessage: "Video playback will appear here.",
+    accessibilityNote: "A written transcript will be available below the video.",
+    sections: []
+  };
 
-      <p class="transcript-note">
-        <strong>Accessibility note:</strong>
-        A written transcript will be available below the video.
-      </p>
-      <div class="lesson-grid">
-  <div>
-    <strong>In this video</strong>
-    <p>
-      Learn the purpose of CareerLink and how your work helps students find
-      accurate resources.
-    </p>
-  </div>
-
-  <div>
-    <strong>After watching</strong>
-    <p>
-      Explore the training hub and continue to your first hands-on activity.
-    </p>
-  </div>
-</div>
-    `;
-  }
-  else if (module.activityType === "video-checklist") {
   activityContent.innerHTML = `
     <div
       class="video-placeholder"
@@ -48,385 +35,486 @@ function renderActivity(module) {
       aria-label="${module.lessonTitle} video placeholder"
     >
       <div class="video-play" aria-hidden="true">▶</div>
+
       <strong>${module.lessonTitle} video coming soon</strong>
+
       <span>
-        This video will explain the tools used for different CareerLink tasks.
+        ${details.videoMessage}
       </span>
     </div>
 
     <p class="transcript-note">
       <strong>Accessibility note:</strong>
-      A written transcript and checklist will be available below the video.
+      ${details.accessibilityNote}
     </p>
 
-<div class="lesson-grid activity-checklist">
-  <div>
-    <strong>Required tools</strong>
-    <p>
-      Keep the tools required for your current assignment available before
-      you begin working.
-    </p>
-
-    <label>
-      <input type="checkbox" name="workspace-item">
-      Browser is open
-    </label>
-
-    <label>
-      <input type="checkbox" name="workspace-item">
-      CareerLink is open
-    </label>
-
-    <label>
-      <input type="checkbox" name="workspace-item">
-      CSUN Box is available
-    </label>
-
-    <label>
-      <input type="checkbox" name="workspace-item">
-      Task-specific tools are ready
-    </label>
-  </div>
-
-  <div>
-    <strong>Why this matters</strong>
-    <p>
-      Preparing your workspace reduces interruptions and makes recurring tasks
-      easier to complete accurately.
-    </p>
-  </div>
-</div>
+    <div class="lesson-grid">
+      ${details.sections
+        .map(
+          (section) => `
+            <div>
+              <strong>${section.heading}</strong>
+              <p>${section.text}</p>
+            </div>
+          `
+        )
+        .join("")}
+    </div>
   `;
 }
+// ===== MODULE 2: WORKSPACE CHECKLIST =====
+else if (module.activityType === "video-checklist") {
+  const details = module.activityDetails || {
+    videoMessage: "Workspace setup video coming soon.",
+    accessibilityNote:
+      "A written transcript and checklist will be available below the video.",
+    checklistTitle: "Required tools",
+    checklistDescription: "",
+    checklistItems: [],
+    supportTitle: "Why this matters",
+    supportText: ""
+  };
+
+  activityContent.innerHTML = `
+    <div
+      class="video-placeholder"
+      role="group"
+      aria-label="${module.lessonTitle} video placeholder"
+    >
+      <div class="video-play" aria-hidden="true">▶</div>
+
+      <strong>${module.lessonTitle} video coming soon</strong>
+
+      <span>
+        ${details.videoMessage}
+      </span>
+    </div>
+
+    <p class="transcript-note">
+      <strong>Accessibility note:</strong>
+      ${details.accessibilityNote}
+    </p>
+
+    <div class="lesson-grid activity-checklist">
+      <div>
+        <strong>${details.checklistTitle}</strong>
+
+        <p>
+          ${details.checklistDescription}
+        </p>
+
+        ${details.checklistItems
+          .map(
+            (item) => `
+              <label>
+                <input type="checkbox" name="workspace-item">
+                ${item}
+              </label>
+            `
+          )
+          .join("")}
+      </div>
+
+      <div>
+        <strong>${details.supportTitle}</strong>
+
+        <p>
+          ${details.supportText}
+        </p>
+      </div>
+    </div>
+  `;
+}
+// ===== MODULE 3: CAREERLINK SCAVENGER HUNT =====
 else if (module.activityType === "scavenger-hunt") {
+  const details = module.activityDetails || {
+    missionTitle: "Your mission",
+    missionText: "",
+    completionTitle: "How to complete this activity",
+    completionText: "",
+    areasTitle: "Explore these CareerLink areas",
+    areas: [],
+    futureActivityNote: ""
+  };
+
   activityContent.innerHTML = `
     <div class="lesson-grid">
       <div>
-        <strong>Your mission</strong>
+        <strong>${details.missionTitle}</strong>
+
         <p>
-          Explore CareerLink and locate the areas listed below. You do not need
-          to memorize everything. The goal is to learn where information lives.
+          ${details.missionText}
         </p>
       </div>
 
       <div>
-        <strong>How to complete this activity</strong>
+        <strong>${details.completionTitle}</strong>
+
         <p>
-          Visit each location, make a note of what you found, and return here
-          when you are ready for the quiz portion.
+          ${details.completionText}
         </p>
       </div>
     </div>
 
     <div class="activity-mission">
-      <h3>Explore these CareerLink areas</h3>
+      <h3>${details.areasTitle}</h3>
 
       <ol>
-        <li>Find one academic program.</li>
-        <li>Find one department page.</li>
-        <li>Find one event listing.</li>
-        <li>Find one CareerLink article.</li>
-        <li>Find one external resource link.</li>
-        <li>Find where taxonomy information is displayed.</li>
+        ${details.areas
+          .map((area) => `<li>${area}</li>`)
+          .join("")}
       </ol>
 
       <p class="transcript-note">
-        The scored scavenger-hunt quiz will be added in a later stage.
+        ${details.futureActivityNote}
       </p>
     </div>
   `;
 }
+// ===== MODULE 4: DAILY WORK RHYTHM =====
 else if (module.activityType === "timeline") {
+  const details = module.activityDetails || {
+    timelineTitle: "Your CareerLink work rhythm",
+    timelineItems: []
+  };
+
   activityContent.innerHTML = `
     <div class="activity-mission">
-      <h3>Your CareerLink work rhythm</h3>
+      <h3>${details.timelineTitle}</h3>
 
-      <div class="timeline-item">
-        <strong>Daily</strong>
-        <p>
-          Review assigned requests, check priorities, and complete current
-          content updates.
-        </p>
-      </div>
-
-      <div class="timeline-item">
-        <strong>Weekly</strong>
-        <p>
-          Review unfinished work, confirm that requests are documented, and
-          communicate questions or progress.
-        </p>
-      </div>
-
-      <div class="timeline-item">
-        <strong>Monthly</strong>
-        <p>
-          Work through recurring maintenance tasks such as reviewing broken-link
-          reports.
-        </p>
-      </div>
-
-      <div class="timeline-item">
-        <strong>Special requests</strong>
-        <p>
-          Respond to approved requests involving events, academic programs,
-          articles, or other CareerLink content.
-        </p>
-      </div>
+      ${details.timelineItems
+        .map(
+          (item) => `
+            <div class="timeline-item">
+              <strong>${item.label}</strong>
+              <p>${item.text}</p>
+            </div>
+          `
+        )
+        .join("")}
     </div>
   `;
 }
+
+// ===== MODULE 5: EVENTS TAB =====
 else if (module.activityType === "events-overview") {
+  const details = module.activityDetails || {
+    overviewTitle: "What is the Events Tab?",
+    overviewText: "",
+    requirementsTitle: "What an event listing should include",
+    requirements: [],
+    nextTitle: "What you will learn next",
+    nextText: ""
+  };
+
   activityContent.innerHTML = `
     <div class="activity-mission">
-      <h3>What is the Events Tab?</h3>
+      <h3>${details.overviewTitle}</h3>
 
       <p>
-        The Events Tab helps CareerLink share workshops, fairs, appointments,
-        information sessions, and other opportunities with students.
+        ${details.overviewText}
       </p>
 
-      <h3>What an event listing should include</h3>
+      <h3>${details.requirementsTitle}</h3>
 
       <ul>
-        <li>A clear and accurate event title</li>
-        <li>Date, time, and location information</li>
-        <li>A useful description</li>
-        <li>Registration or event links</li>
-        <li>Accessible and relevant images, when needed</li>
+        ${details.requirements
+          .map((requirement) => `<li>${requirement}</li>`)
+          .join("")}
       </ul>
 
-      <h3>What you will learn next</h3>
+      <h3>${details.nextTitle}</h3>
 
       <p>
-        You will later practice creating a sample event, previewing it, checking
-        its accuracy, and confirming that it remains unpublished.
+        ${details.nextText}
       </p>
     </div>
   `;
 }
+
+// ===== MODULE 6: ACADEMIC PROGRAM OVERVIEW =====
 else if (module.activityType === "interactive-example") {
+  const details = module.activityDetails || {
+    overviewTitle: "What is an academic program update?",
+    overviewText: "",
+    examineTitle: "What you will examine",
+    examineItems: [],
+    nextTitle: "What you will learn next",
+    nextText: ""
+  };
+
   activityContent.innerHTML = `
     <div class="activity-mission">
-      <h3>What is an academic program update?</h3>
+      <h3>${details.overviewTitle}</h3>
 
       <p>
-        Academic program updates help keep CareerLink information aligned with
-        the university's current program catalog. These updates allow students
-        to find accurate descriptions of programs, departments, and related
-        career information.
+        ${details.overviewText}
       </p>
 
-      <h3>What you will examine</h3>
+      <h3>${details.examineTitle}</h3>
 
       <ul>
-        <li>The name and type of an academic program</li>
-        <li>The department connected to the program</li>
-        <li>The program description</li>
-        <li>Career-related information and resources</li>
-        <li>The approved source used to verify the information</li>
+        ${details.examineItems
+          .map((item) => `<li>${item}</li>`)
+          .join("")}
       </ul>
 
-      <h3>What you will learn next</h3>
+      <h3>${details.nextTitle}</h3>
 
       <p>
-        You will later explore a real academic program and identify what each
-        part of the program means before creating or updating one yourself.
+        ${details.nextText}
       </p>
     </div>
   `;
 }
+
+// ===== MODULE 7: ACADEMIC PROGRAM BUILDER =====
 else if (module.activityType === "academic-builder") {
+  const details = module.activityDetails || {
+    overviewTitle: "Building a new academic program",
+    overviewText: "",
+    preparationTitle: "Before you begin",
+    preparationItems: [],
+    approvalTitle: "Important approval rule",
+    approvalText: "",
+    practiceTitle: "What you will practice later",
+    practiceText: ""
+  };
+
   activityContent.innerHTML = `
     <div class="activity-mission">
-      <h3>Building a new academic program</h3>
+      <h3>${details.overviewTitle}</h3>
 
       <p>
-        Creating an academic program requires careful research, accurate
-        information, and clear organization. The goal is to build a useful
-        draft using approved university sources.
+        ${details.overviewText}
       </p>
 
-      <h3>Before you begin</h3>
+      <h3>${details.preparationTitle}</h3>
 
       <ul>
-        <li>Locate the official academic program catalog.</li>
-        <li>Confirm the program's current name and department.</li>
-        <li>Review the approved program description.</li>
-        <li>Gather relevant career information and resources.</li>
-        <li>Understand which fields require approval before publishing.</li>
+        ${details.preparationItems
+          .map((item) => `<li>${item}</li>`)
+          .join("")}
       </ul>
 
-      <h3>Important approval rule</h3>
+      <h3>${details.approvalTitle}</h3>
 
       <p>
-        Student assistants may prepare and organize a draft, but the program
-        should be reviewed by the appropriate staff member before it is
-        published on CareerLink.
+        ${details.approvalText}
       </p>
 
-      <h3>What you will practice later</h3>
+      <h3>${details.practiceTitle}</h3>
 
       <p>
-        You will build a draft for an actual academic program, compare it with
-        approved sources, complete a quality checklist, and submit it for
-        review.
+        ${details.practiceText}
       </p>
     </div>
   `;
 }
+// ===== MODULE 8: CAREERLINK TAXONOMY =====
 else if (module.activityType === "matching") {
+  const details = module.activityDetails || {
+    overviewTitle: "What is CareerLink taxonomy?",
+    overviewText: "",
+    importanceTitle: "Why taxonomy matters",
+    importanceItems: [],
+    examineTitle: "What you will examine",
+    examineText: "",
+    exampleTitle: "Example resource",
+    exampleText: "",
+    questionTitle: "Key question",
+    questionText: ""
+  };
+
   activityContent.innerHTML = `
     <div class="activity-mission">
-      <h3>What is CareerLink taxonomy?</h3>
+      <h3>${details.overviewTitle}</h3>
 
       <p>
-        Taxonomy is the system CareerLink uses to organize content into
-        meaningful categories. It helps students find related programs,
-        articles, and resources more easily.
+        ${details.overviewText}
       </p>
 
-      <h3>Why taxonomy matters</h3>
+      <h3>${details.importanceTitle}</h3>
 
       <ul>
-        <li>It keeps related content connected.</li>
-        <li>It improves navigation and discoverability.</li>
-        <li>It helps prevent resources from being misplaced.</li>
-        <li>It creates consistency across CareerLink pages.</li>
+        ${details.importanceItems
+          .map((item) => `<li>${item}</li>`)
+          .join("")}
       </ul>
 
-      <h3>What you will examine</h3>
+      <h3>${details.examineTitle}</h3>
 
       <p>
-        You will later review examples of CareerLink content and identify which
-        taxonomy terms or categories best match each item.
+        ${details.examineText}
       </p>
 
       <div class="lesson-grid">
         <div>
-          <strong>Example resource</strong>
+          <strong>${details.exampleTitle}</strong>
+
           <p>
-            A resume-writing workshop should be connected to categories related
-            to career preparation and student support.
+            ${details.exampleText}
           </p>
         </div>
 
         <div>
-          <strong>Key question</strong>
+          <strong>${details.questionTitle}</strong>
+
           <p>
-            Ask: “Which category would help a student find this resource?”
+            ${details.questionText}
           </p>
         </div>
       </div>
     </div>
   `;
 }
+
+// ===== MODULE 9: CAREERLINK ARTICLES =====
 else if (module.activityType === "article-practice") {
+  const details = module.activityDetails || {
+    overviewTitle: "Working with CareerLink articles",
+    overviewText: "",
+    tasksTitle: "Common article tasks",
+    tasks: [],
+    beforeTitle: "Before creating a new article",
+    beforeText: "",
+    qualityTitle: "Good article content",
+    qualityText: "",
+    reviewTitle: "Review before publishing",
+    reviewText: "",
+    practiceNote: ""
+  };
+
   activityContent.innerHTML = `
     <div class="activity-mission">
-      <h3>Working with CareerLink articles</h3>
+      <h3>${details.overviewTitle}</h3>
 
       <p>
-        Articles are one of the main ways CareerLink stores useful information,
-        explains services, and connects students with external resources.
+        ${details.overviewText}
       </p>
 
-      <h3>Common article tasks</h3>
+      <h3>${details.tasksTitle}</h3>
 
       <ul>
-        <li>Review and update an existing article.</li>
-        <li>Create a new article when an approved resource needs to be added.</li>
-        <li>Write a clear and useful title.</li>
-        <li>Format content so it is easy to scan.</li>
-        <li>Add and test external links.</li>
-        <li>Review the page before it is published.</li>
+        ${details.tasks
+          .map((task) => `<li>${task}</li>`)
+          .join("")}
       </ul>
 
-      <h3>Before creating a new article</h3>
+      <h3>${details.beforeTitle}</h3>
 
       <p>
-        First determine whether the information belongs in an existing article.
-        Creating duplicate pages can make CareerLink harder to maintain and
-        harder for students to navigate.
+        ${details.beforeText}
       </p>
 
       <div class="lesson-grid">
         <div>
-          <strong>Good article content</strong>
+          <strong>${details.qualityTitle}</strong>
+
           <p>
-            Clear, accurate, current, relevant to students, and connected to
-            an appropriate category.
+            ${details.qualityText}
           </p>
         </div>
 
         <div>
-          <strong>Review before publishing</strong>
+          <strong>${details.reviewTitle}</strong>
+
           <p>
-            Check the title, formatting, links, source information, accessibility,
-            and page placement.
+            ${details.reviewText}
           </p>
         </div>
       </div>
 
       <p class="transcript-note">
         <strong>What you will practice later:</strong>
-        You will revise a sample article and decide whether it should be updated
-        or replaced with a new page.
+        ${details.practiceNote}
       </p>
     </div>
   `;
 }
+
+// ===== MODULE 10: BROKEN-LINK DETECTIVE =====
 else if (module.activityType === "detective-challenge") {
+  const details = module.activityDetails || {
+    overviewTitle: "What is broken-link maintenance?",
+    overviewText: "",
+    workflowTitle: "The basic workflow",
+    workflowSteps: [],
+    solutionsTitle: "Not every broken link has the same solution",
+    solutions: [],
+    toolsTitle: "Tools you may use",
+    toolsText: "",
+    practiceTitle: "What you will practice later",
+    practiceText: ""
+  };
+
   activityContent.innerHTML = `
     <div class="activity-mission">
-      <h3>What is broken-link maintenance?</h3>
+      <h3>${details.overviewTitle}</h3>
 
       <p>
-        Broken-link maintenance involves reviewing links on CareerLink,
-        determining what caused a link to fail, and deciding whether the link
-        should be repaired, replaced, removed, or escalated.
+        ${details.overviewText}
       </p>
 
-      <h3>The basic workflow</h3>
+      <h3>${details.workflowTitle}</h3>
 
       <ol>
-        <li>Review the broken-link report.</li>
-        <li>Locate the affected CareerLink page.</li>
-        <li>Investigate the link and determine what happened.</li>
-        <li>Find an approved replacement when necessary.</li>
-        <li>Update or remove the link.</li>
-        <li>Document the completed work.</li>
+        ${details.workflowSteps
+          .map((step) => `<li>${step}</li>`)
+          .join("")}
       </ol>
 
-      <h3>Not every broken link has the same solution</h3>
+      <h3>${details.solutionsTitle}</h3>
 
       <ul>
-        <li>A temporary outage may need to be monitored.</li>
-        <li>A redirected page may need to be updated.</li>
-        <li>A permanently removed page may need a replacement.</li>
-        <li>A suspicious link should be escalated before being opened.</li>
+        ${details.solutions
+          .map((solution) => `<li>${solution}</li>`)
+          .join("")}
       </ul>
 
       <div class="lesson-grid">
         <div>
-          <strong>Tools you may use</strong>
+          <strong>${details.toolsTitle}</strong>
+
           <p>
-            Broken-link reports, Screaming Frog, a web browser, approved source
-            pages, and CSUN Box documentation.
+            ${details.toolsText}
           </p>
         </div>
 
         <div>
-          <strong>What you will practice later</strong>
+          <strong>${details.practiceTitle}</strong>
+
           <p>
-            You will review sample report entries, classify each problem, choose
-            the appropriate action, and document the result.
+            ${details.practiceText}
           </p>
         </div>
       </div>
     </div>
   `;
 }
+
+// Fallback for a missing or unsupported activity type
+else {
+  activityContent.innerHTML = `
+    <div class="activity-mission">
+      <h3>Activity coming soon</h3>
+
+      <p>
+        This lesson is being prepared. Please check back later or contact the
+        CareerLink team for guidance.
+      </p>
+    </div>
+  `;
 }
+}
+
+/* =========================================
+   ACTIVITY CONTENT RENDERING
+
+   This currently contains the lesson layouts
+   for each activity type. Written module content
+   should eventually move into modules.js.
+   ========================================= */
 
 function renderModules() {
 
@@ -436,22 +524,9 @@ function renderModules() {
     "Content Workflows",
     "Maintenance"
   ];
-
-  const availableModules = new Set([
-    "welcome",
-    "workspace",
-    "explore",
-    "day-in-life",
-    "events",
-    "academic-overview",
-    "academic-builder",
-    "taxonomy",
-    "articles",
-    "broken-links"
-  ]);
-
+  
   function renderModuleCard(module) {
-    const isAvailable = availableModules.has(module.id);
+    const isAvailable = module.available === true;
     const buttonText = isAvailable
       ? "Open lesson"
       : "Activity coming next";
@@ -555,6 +630,10 @@ const lessonPanel = document.querySelector("#lesson-panel");
 const closeLessonButton = document.querySelector("#close-lesson");
 let lastTrigger = null;
 
+/* =========================================
+   PROGRESS AND COMPLETION STATE
+   ========================================= */
+
 function updateProgress() {
   const completedCount = moduleKeys.filter((key) => completed.has(key)).length;
   const percent = Math.round((completedCount / moduleKeys.length) * 100);
@@ -570,6 +649,10 @@ function updateProgress() {
     button.innerHTML = isComplete ? 'Review module <span aria-hidden="true">↗</span>' : 'Open module <span aria-hidden="true">→</span>';
   });
 }
+
+/* =========================================
+   USER INTERACTION HANDLERS
+   ========================================= */
 
 document.querySelectorAll("[data-complete]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -598,7 +681,7 @@ document.querySelector("#lesson-description").textContent =
 if (selectedPhase) {
   selectedPhase.after(lessonPanel);
 }
-
+    lessonPanel.classList.remove("is-closing");
     lessonPanel.hidden = false;
 
     button.setAttribute("aria-expanded", "true");
@@ -612,20 +695,34 @@ if (selectedPhase) {
   });
 });
 
-function closeLesson(){
-  lessonPanel.hidden = true;
-
-  if (lastTrigger) {
-  lastTrigger.setAttribute("aria-expanded", "false");
-
-  const openCard = lastTrigger.closest(".module-card");
-
-  if (openCard) {
-    openCard.classList.remove("is-open");
+function closeLesson() {
+  if (lessonPanel.hidden) {
+    return;
   }
 
-  lastTrigger.focus();
-}
+  lessonPanel.classList.add("is-closing");
+
+  const finishClose = (event) => {
+    if (event.animationName !== "lessonClose") {
+      return;
+    }
+
+    if (!lessonPanel.classList.contains("is-closing")) {
+      return;
+    }
+
+    lessonPanel.hidden = true;
+    lessonPanel.classList.remove("is-closing");
+  };
+
+  lessonPanel.addEventListener("animationend", finishClose, {
+    once: true
+  });
+
+  if (lastTrigger) {
+    lastTrigger.setAttribute("aria-expanded", "false");
+    lastTrigger.focus();
+  }
 }
 closeLessonButton.addEventListener("click", closeLesson);
 
@@ -642,6 +739,10 @@ document.querySelector("#complete-lesson").addEventListener("click", () => {
   closeLesson();
 });
 
+/* =========================================
+   HELP CENTER SEARCH
+   ========================================= */
+
 document.querySelector("#search-form").addEventListener("submit", (event) => {
   event.preventDefault();
   const query = document.querySelector("#search").value.trim();
@@ -649,5 +750,9 @@ document.querySelector("#search-form").addEventListener("submit", (event) => {
     ? `Help Center search is ready for “${query}.” Next, we’ll connect this to real articles.`
     : "Try searching for a task, tool, or problem.";
 });
+
+/* =========================================
+   INITIAL PAGE UPDATE
+   ========================================= */
 
 updateProgress();
