@@ -32,6 +32,11 @@ const modules = [
     "Start here to learn what CareerLink is, how your role supports the Career Center, and what you can expect as a Program Assistant.",
     
     activityDetails: {
+      video: {
+      provider: "youtube",
+      videoId: "PjbbX1W8FBKWW4P",
+      captionsAvailable: true
+      },
       videoMessage:
       "Video playback, captions, and transcript will appear here.",
 

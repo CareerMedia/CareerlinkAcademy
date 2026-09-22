@@ -23,12 +23,37 @@ function renderActivity(module) {
   // ===== MODULE 1: WELCOME VIDEO =====
   if (module.activityType === "video") {
     const details = module.activityDetails || {
+    video: {
+    provider: "youtube",
+    videoId: "",
+    captionsAvailable: false
+    },
     videoMessage: "Video playback will appear here.",
     accessibilityNote: "A written transcript will be available below the video.",
     sections: []
   };
+  const hasYoutubeVideo =
+  details.video?.provider === "youtube" &&
+  details.video.videoId;
 
-  activityContent.innerHTML = `
+const captionsParam = details.video?.captionsAvailable
+  ? "&cc_load_policy=1"
+  : "";
+
+const videoMarkup = hasYoutubeVideo
+  ? `
+    <div class="video-embed">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(
+          details.video.videoId
+        )}?rel=0${captionsParam}"
+        title="${module.lessonTitle}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+    </div>
+  `
+  : `
     <div
       class="video-placeholder"
       role="group"
@@ -42,6 +67,9 @@ function renderActivity(module) {
         ${details.videoMessage}
       </span>
     </div>
+  `;
+  activityContent.innerHTML = `
+    ${videoMarkup}
 
     <p class="transcript-note">
       <strong>Accessibility note:</strong>

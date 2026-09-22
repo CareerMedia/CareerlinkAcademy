@@ -719,6 +719,28 @@ footer {
   color: #f4c7cb;
   font-size: 0.86rem;
 }
+/* ------------------------------
+   Embedded video player
+------------------------------ */
+
+.video-embed {
+  width: 100%;
+  margin: 26px 0 10px;
+  overflow: hidden;
+
+  border-radius: 16px;
+  background: var(--black);
+  aspect-ratio: 16 / 9;
+}
+
+.video-embed iframe {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+}
 
 .video-play {
   display: grid;
