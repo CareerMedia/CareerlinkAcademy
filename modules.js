@@ -34,7 +34,7 @@ const modules = [
     activityDetails: {
       video: {
       provider: "youtube",
-      videoId: "PjbbX1W8FBKWW4P",
+      videoId: "PpJLZqidPog",
       captionsAvailable: true
       },
       videoMessage:
