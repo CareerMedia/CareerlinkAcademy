@@ -4,6 +4,76 @@ const moduleGrid = document.querySelector("#module-grid");
 const certificateSection = document.querySelector("#certificate-section");
 const activityContent = document.querySelector("#activity-content");
 
+let youtubePlayer = null;
+const youtubePlayerQueue = [];
+
+window.onYouTubeIframeAPIReady = () => {
+  youtubePlayerQueue.forEach((createPlayer) => {
+    createPlayer();
+  });
+
+  youtubePlayerQueue.length = 0;
+};
+
+function prepareVideoCompletion(module) {
+  const completeButton = document.querySelector("#complete-lesson");
+  const video = module.activityDetails?.video;
+
+  completeButton.disabled = false;
+completeButton.innerHTML =
+  'Mark lesson complete <span aria-hidden="true">✓</span>';
+
+if (youtubePlayer) {
+  youtubePlayer.destroy();
+  youtubePlayer = null;
+}
+
+if (completed.has(module.id)) {
+  completeButton.disabled = true;
+  completeButton.innerHTML =
+    'Module completed <span aria-hidden="true">✓</span>';
+
+  return;
+}
+
+  if (
+    video?.provider !== "youtube" ||
+    !video.videoId ||
+    !document.querySelector("#youtube-player")
+  ) {
+    return;
+  }
+
+  completeButton.disabled = true;
+  completeButton.textContent = "Watch video to unlock completion";
+
+  const createPlayer = () => {
+    const iframe = document.querySelector("#youtube-player");
+
+    if (!iframe || !window.YT?.Player) {
+      return;
+    }
+
+    youtubePlayer = new YT.Player("youtube-player", {
+      events: {
+        onStateChange(event) {
+          if (event.data === YT.PlayerState.ENDED) {
+            completeButton.disabled = false;
+            completeButton.innerHTML =
+              'Mark lesson complete <span aria-hidden="true">✓</span>';
+          }
+        }
+      }
+    });
+  };
+
+  if (window.YT?.Player) {
+    createPlayer();
+  } else {
+    youtubePlayerQueue.push(createPlayer);
+  }
+}
+
 /* =========================================
    APP STATE AND DOM REFERENCES
    ========================================= */
@@ -29,7 +99,6 @@ function renderActivity(module) {
     captionsAvailable: false
     },
     videoMessage: "Video playback will appear here.",
-    accessibilityNote: "A written transcript will be available below the video.",
     sections: []
   };
   const hasYoutubeVideo =
@@ -40,14 +109,21 @@ const captionsParam = details.video?.captionsAvailable
   ? "&cc_load_policy=1"
   : "";
 
+const originParam =
+  window.location.origin !== "null"
+    ? `&origin=${encodeURIComponent(window.location.origin)}`
+    : "";
+
 const videoMarkup = hasYoutubeVideo
   ? `
     <div class="video-embed">
       <iframe
+        id="youtube-player"
         src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(
           details.video.videoId
-        )}?rel=0${captionsParam}"
+        )}?enablejsapi=1${originParam}&rel=0${captionsParam}"
         title="${module.lessonTitle}"
+        referrerpolicy="strict-origin-when-cross-origin"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen
       ></iframe>
@@ -70,11 +146,6 @@ const videoMarkup = hasYoutubeVideo
   `;
   activityContent.innerHTML = `
     ${videoMarkup}
-
-    <p class="transcript-note">
-      <strong>Accessibility note:</strong>
-      ${details.accessibilityNote}
-    </p>
 
     <div class="lesson-grid">
       ${details.sections
@@ -711,6 +782,7 @@ if (selectedPhase) {
 }
     lessonPanel.classList.remove("is-closing");
     lessonPanel.hidden = false;
+    prepareVideoCompletion(selectedModule);
 
     button.setAttribute("aria-expanded", "true");
 

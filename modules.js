@@ -40,9 +40,6 @@ const modules = [
       videoMessage:
       "Video playback, captions, and transcript will appear here.",
 
-      accessibilityNote:
-        "A written transcript will be available below the video.",
-
       sections: [
         {
           heading: "In this video",

@@ -568,6 +568,22 @@ footer {
   align-items: center;
   gap: 10px;
 }
+/* CSS to prevent caurasel from overflowing the container*/
+.phase-group,
+.phase-carousel {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.phase-carousel {
+  overflow: hidden;
+}
+
+.phase-grid {
+  min-width: 0;
+  max-width: 100%;
+}
 
 .phase-grid {
   display: flex;
