@@ -1010,3 +1010,48 @@ footer {
   transform-origin: top center;
   pointer-events: none;
 }
+/* ------------------------------
+   Shared stacked activity sections
+------------------------------ */
+
+.activity-sections {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.activity-sections > div {
+  padding: 20px;
+
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--csun-red);
+  border-radius: 12px;
+  background: var(--white);
+}
+
+.activity-sections > div > strong {
+  display: block;
+  margin-bottom: 8px;
+
+  color: var(--csun-red);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.activity-checklist label {
+  display: block;
+  margin-top: 0;
+  padding: 12px 0;
+
+  border-top: 1px solid var(--line);
+}
+
+.activity-checklist label:first-of-type {
+  margin-top: 18px;
+}
+
+.activity-checklist input {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: middle;
+}

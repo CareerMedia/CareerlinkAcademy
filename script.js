@@ -147,7 +147,7 @@ const videoMarkup = hasYoutubeVideo
   activityContent.innerHTML = `
     ${videoMarkup}
 
-    <div class="lesson-grid">
+    <div class="lesson-grid activity-sections">
       ${details.sections
         .map(
           (section) => `
@@ -194,7 +194,7 @@ else if (module.activityType === "video-checklist") {
       ${details.accessibilityNote}
     </p>
 
-    <div class="lesson-grid activity-checklist">
+    <div class="lesson-grid activity-checklist activity-sections">
       <div>
         <strong>${details.checklistTitle}</strong>
 
