@@ -78,7 +78,55 @@ if (completed.has(module.id)) {
    APP STATE AND DOM REFERENCES
    ========================================= */
 
-   /*
+function buildVideoMarkup(module, details) {
+  const hasYoutubeVideo =
+    details.video?.provider === "youtube" &&
+    details.video.videoId;
+
+  if (!hasYoutubeVideo) {
+    return `
+      <div
+        class="video-placeholder"
+        role="group"
+        aria-label="${module.lessonTitle} video placeholder"
+      >
+        <div class="video-play" aria-hidden="true">▶</div>
+
+        <strong>${module.lessonTitle} video coming soon</strong>
+
+        <span>
+          ${details.videoMessage}
+        </span>
+      </div>
+    `;
+  }
+
+  const originParam =
+    window.location.origin !== "null"
+      ? `&origin=${encodeURIComponent(window.location.origin)}`
+      : "";
+
+  const captionsParam = details.video.captionsAvailable
+    ? "&cc_load_policy=1"
+    : "";
+
+  return `
+    <div class="video-embed">
+      <iframe
+        id="youtube-player"
+        src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(
+          details.video.videoId
+        )}?enablejsapi=1${originParam}&rel=0${captionsParam}"
+        title="${module.lessonTitle}"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+    </div>
+  `;
+}
+
+/*
   Activity content editor note:
 
   Each activity type below controls the lesson content
@@ -114,22 +162,8 @@ const originParam =
     ? `&origin=${encodeURIComponent(window.location.origin)}`
     : "";
 
-const videoMarkup = hasYoutubeVideo
-  ? `
-    <div class="video-embed">
-      <iframe
-        id="youtube-player"
-        src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(
-          details.video.videoId
-        )}?enablejsapi=1${originParam}&rel=0${captionsParam}"
-        title="${module.lessonTitle}"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-      ></iframe>
-    </div>
+const videoMarkup = buildVideoMarkup(module, details);
   `
-  : `
     <div
       class="video-placeholder"
       role="group"
@@ -164,6 +198,11 @@ const videoMarkup = hasYoutubeVideo
 // ===== MODULE 2: WORKSPACE CHECKLIST =====
 else if (module.activityType === "video-checklist") {
   const details = module.activityDetails || {
+    video: {
+      provider: "youtube",
+      videoId: "",
+      captionsAvailable: true
+      },
     videoMessage: "Workspace setup video coming soon.",
     accessibilityNote:
       "A written transcript and checklist will be available below the video.",
@@ -173,26 +212,10 @@ else if (module.activityType === "video-checklist") {
     supportTitle: "Why this matters",
     supportText: ""
   };
+  const videoMarkup = buildVideoMarkup(module, details);
 
   activityContent.innerHTML = `
-    <div
-      class="video-placeholder"
-      role="group"
-      aria-label="${module.lessonTitle} video placeholder"
-    >
-      <div class="video-play" aria-hidden="true">▶</div>
-
-      <strong>${module.lessonTitle} video coming soon</strong>
-
-      <span>
-        ${details.videoMessage}
-      </span>
-    </div>
-
-    <p class="transcript-note">
-      <strong>Accessibility note:</strong>
-      ${details.accessibilityNote}
-    </p>
+    ${videoMarkup}
 
     <div class="lesson-grid activity-checklist activity-sections">
       <div>
@@ -222,6 +245,12 @@ else if (module.activityType === "video-checklist") {
         </p>
       </div>
     </div>
+    <p
+      id="activity-feedback"
+      class="activity-feedback"
+      role="status"
+      aria-live="polite"
+    ></p>
   `;
 }
 // ===== MODULE 3: CAREERLINK SCAVENGER HUNT =====
@@ -832,9 +861,50 @@ document.addEventListener("keydown", (event) => {
   }
 })
 
+/* =========================================
+   Completion Handler
+   ========================================= */
 document.querySelector("#complete-lesson").addEventListener("click", () => {
-  completed.add(lastTrigger.dataset.complete);
-  localStorage.setItem("careerlink-completed", JSON.stringify([...completed]));
+  const selectedModule = modules.find(
+    (module) => module.id === lastTrigger?.dataset.complete
+  );
+
+  if (!selectedModule) {
+    return;
+  }
+
+  if (selectedModule.activityType === "video-checklist") {
+    const checklistItems = [
+      ...activityContent.querySelectorAll(
+        'input[name="workspace-item"]'
+      )
+    ];
+
+    const uncheckedItems = checklistItems.filter(
+      (item) => !item.checked
+    );
+
+    if (uncheckedItems.length > 0) {
+      const feedback = activityContent.querySelector(
+        "#activity-feedback"
+      );
+
+      const itemWord =
+        uncheckedItems.length === 1 ? "item is" : "items are";
+
+      feedback.textContent =
+        ` You're almost ready! ${uncheckedItems.length} workspace ${itemWord} still waiting for a checkmark.`;
+
+      return;
+    }
+  }
+
+  completed.add(selectedModule.id);
+  localStorage.setItem(
+    "careerlink-completed",
+    JSON.stringify([...completed])
+  );
+
   updateProgress();
   closeLesson();
 });

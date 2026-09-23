@@ -1055,3 +1055,10 @@ footer {
   margin-right: 8px;
   vertical-align: middle;
 }
+.activity-feedback {
+  min-height: 24px;
+  margin: 14px 0 0;
+
+  color: var(--csun-red);
+  font-weight: 700;
+}

@@ -74,22 +74,27 @@ const modules = [
     "Learn which tools and tabs support the different tasks you may complete.",
 
     activityDetails: {
-  videoMessage:
-    "This video will explain the tools used for different CareerLink tasks.",
+      video: {
+        provider: "youtube",
+        videoId: "U_OHD7e8qCk",
+        captionsAvailable: true
+        },
+      videoMessage:
+        "This video will explain the tools used for different CareerLink tasks.",
 
-  accessibilityNote:
-    "A written transcript and checklist will be available below the video.",
+      checklistTitle: "Required tools",
 
-  checklistTitle: "Required tools",
-
-  checklistDescription:
-    "Keep the tools required for your current assignment available before you begin working.",
+      checklistDescription:
+        "Keep the tools required for your current assignment available before you begin working.",
 
   checklistItems: [
-    "Browser is open",
     "CareerLink is open",
+    "CareerLink Content Page is open",
+    "Monday.com is open",
+    "Microsoft Teams is available",
     "CSUN Box is available",
-    "Task-specific tools are ready"
+    "Screaming Frog is available",
+
   ],
 
   supportTitle: "Why this matters",
