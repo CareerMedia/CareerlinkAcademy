@@ -119,7 +119,7 @@ function buildVideoMarkup(module, details) {
         )}?enablejsapi=1${originParam}&rel=0${captionsParam}"
         title="${module.lessonTitle}"
         referrerpolicy="strict-origin-when-cross-origin"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen
       ></iframe>
     </div>
