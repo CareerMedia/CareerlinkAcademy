@@ -9,7 +9,8 @@
   --surface-alt: #F5F5F5;
   --pale-red: #F9E6E8;
   --line: #D9D9D9;
-
+  --success: #2e7d5b;
+  --success-soft: #e8f3ed;
   --accent: var(--csun-red);
 }
 /* ------------------------------
@@ -1061,4 +1062,225 @@ footer {
 
   color: var(--csun-red);
   font-weight: 700;
+}
+#start-quiz {
+  display: flex;
+  width: max-content;
+  margin: 28px auto 0;
+}
+/* ------------------------------
+   CareerLink Explorer Quiz
+------------------------------ */
+
+.quiz-question {
+  margin: 24px 0;
+  padding: 20px;
+
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+}
+
+.quiz-question legend {
+  max-width: 100%;
+  padding: 0 8px;
+
+  color: var(--text);
+  font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 10px;
+  padding: 12px 14px;
+
+  border: 1px solid var(--line);
+  border-radius: 8px;
+
+  color: var(--muted);
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    color 0.2s;
+}
+
+.quiz-option:hover {
+  border-color: var(--csun-red);
+  background: var(--pale-red);
+  color: var(--text);
+}
+
+.quiz-option input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+
+  accent-color: var(--csun-red);
+}
+
+#careerlink-quiz > button {
+  margin-top: 8px;
+}
+
+
+/* ------------------------------
+   Quiz opening animation
+------------------------------ */
+
+@keyframes quizReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scaleY(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+#quiz-stage:not([hidden]) {
+  animation: quizReveal 0.4s ease-out both;
+  transform-origin: top center;
+}
+/* ------------------------------
+   Quiz controls and results
+------------------------------ */
+
+.quiz-actions {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  margin-top: 26px;
+}
+
+.quiz-back {
+  justify-self: start;
+
+  padding: 0;
+  border: 0;
+  background: none;
+
+  color: var(--accent);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.quiz-back:hover {
+  text-decoration: underline;
+}
+
+.quiz-submit {
+  grid-column: 2;
+  justify-self: center;
+}
+
+.quiz-hint {
+  margin: 12px 0 0;
+
+  color: var(--muted);
+  font-size: 0.84rem;
+  text-align: center;
+}
+
+.quiz-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+@property --score-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.quiz-gauge {
+  --score-angle: 0deg;
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  width: 142px;
+  height: 142px;
+  border-radius: 50%;
+
+  background: conic-gradient(
+    from 0deg,
+    var(--csun-red) var(--score-angle),
+    var(--surface-alt) var(--score-angle)
+  );
+
+  transition: --score-angle 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.quiz-gauge::before {
+  content: "";
+
+  position: absolute;
+
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+
+  background: var(--white);
+}
+
+.quiz-gauge span {
+  position: relative;
+  z-index: 1;
+
+  color: var(--text);
+  font-size: 1.8rem;
+  font-weight: 800;
+  position: relative;
+}
+
+.quiz-feedback {
+  max-width: 620px;
+  margin: 18px 0 0;
+
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+}
+.quiz-option.is-correct {
+  border-color: var(--success);
+  background: var(--success-soft);
+  color: var(--text);
+}
+
+.quiz-option.is-correct::after {
+  content: "✓ Correct";
+  margin-left: auto;
+
+  color: var(--success);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.quiz-option.is-incorrect {
+  border-color: var(--csun-red);
+  background: var(--pale-red);
+  color: var(--text);
+}
+
+.quiz-option.is-incorrect::after {
+  content: "× Review";
+  margin-left: auto;
+
+  color: var(--csun-red);
+  font-size: 0.78rem;
+  font-weight: 800;
 }

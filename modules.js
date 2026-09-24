@@ -136,16 +136,97 @@ const modules = [
   areasTitle: "Explore these CareerLink areas",
 
   areas: [
-    "Find one academic program.",
-    "Find one department page.",
-    "Find one event listing.",
-    "Find one CareerLink article.",
-    "Find one external resource link.",
-    "Find where taxonomy information is displayed."
+    "Find the content page and explore its features.",
+    "Look through the 8 CareerLink sections.",
+    "Find where students can access academic program resources.",
+    "Find and explore Forage.",
+    "Find and explore Parker Dewey.",
+    "Complete the O*Net Interest Profiler.",
+    "Find and explore LinkedIn Learning.",
+    "Look for one event listing, and search for it on the content page.",
+    "Find one CareerLink article and explore its content page."
   ],
 
-  futureActivityNote:
-    "The scored scavenger-hunt quiz will be added in a later stage."
+  quiz: {
+  title: "CareerLink Explorer Quiz",
+
+  instructions:
+    "Use CareerLink to explore the site, then answer the questions below. You need at least 80% to complete this module.",
+
+  passingScore: 0.8,
+
+  questions: [
+    {
+      prompt:
+        "Where would you look for upcoming workshops, fairs, and information sessions?",
+
+      options: [
+        "Events Tab",
+        "Academic Programs",
+        "CareerLink Articles",
+        "Taxonomy"
+      ],
+
+      correctIndex: 0
+    },
+
+    {
+      prompt:
+        "Where would you look for information about an academic program?",
+
+      options: [
+        "Events Tab",
+        "Academic Programs",
+        "Help Center",
+        "Broken Links"
+      ],
+
+      correctIndex: 1
+    },
+
+    {
+      prompt:
+        "Which area is commonly used to store written information and external resource links?",
+
+      options: [
+        "CareerLink Articles",
+        "Events Tab",
+        "Taxonomy",
+        "Academic Programs"
+      ],
+
+      correctIndex: 0
+    },
+
+    {
+      prompt:
+        "What helps connect related CareerLink resources to meaningful categories?",
+
+      options: [
+        "Events",
+        "Articles",
+        "Taxonomy",
+        "Broken Links"
+      ],
+
+      correctIndex: 2
+    },
+
+    {
+      prompt:
+        "What is the main goal of exploring CareerLink in this module?",
+
+      options: [
+        "Memorize every page on the website",
+        "Learn where important information and resources are located",
+        "Publish a new article immediately",
+        "Complete a broken-link report"
+      ],
+
+      correctIndex: 1
+    }
+  ]
+},
 },
     activityType: "scavenger-hunt",
     completionRule: "activity-complete"

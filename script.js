@@ -262,42 +262,268 @@ else if (module.activityType === "scavenger-hunt") {
     completionText: "",
     areasTitle: "Explore these CareerLink areas",
     areas: [],
-    futureActivityNote: ""
+    quiz: {
+      title: "CareerLink Explorer Quiz",
+      instructions: "",
+      passingScore: 0.8,
+      questions: []
+    }
   };
 
+  const quiz = details.quiz;
+
   activityContent.innerHTML = `
-    <div class="lesson-grid">
-      <div>
-        <strong>${details.missionTitle}</strong>
+    <div id="exploration-stage">
+      <div class="activity-sections">
+        <div>
+          <strong>${details.missionTitle}</strong>
 
-        <p>
-          ${details.missionText}
-        </p>
+          <p>
+            ${details.missionText}
+          </p>
+        </div>
+
+        <div>
+          <strong>${details.completionTitle}</strong>
+
+          <p>
+            ${details.completionText}
+          </p>
+        </div>
       </div>
 
-      <div>
-        <strong>${details.completionTitle}</strong>
+      <div class="activity-mission">
+        <h3>${details.areasTitle}</h3>
 
-        <p>
-          ${details.completionText}
-        </p>
+        <ul class="scavenger-list">
+          ${details.areas
+            .map((area) => `<li>${area}</li>`)
+            .join("")}
+        </ul>
+
+        <button
+          id="start-quiz"
+          class="button button-dark"
+          type="button"
+        >
+          Start Quiz
+        </button>
       </div>
     </div>
 
-    <div class="activity-mission">
-      <h3>${details.areasTitle}</h3>
+    <div
+      id="quiz-stage"
+      class="activity-mission"
+      hidden
+    >
+      <h3>${quiz.title}</h3>
 
-      <ol>
-        ${details.areas
-          .map((area) => `<li>${area}</li>`)
-          .join("")}
-      </ol>
-
-      <p class="transcript-note">
-        ${details.futureActivityNote}
+      <p>
+        ${quiz.instructions}
       </p>
-    </div>
+
+      <form id="careerlink-quiz">
+        ${quiz.questions
+          .map(
+            (question, questionIndex) => `
+              <fieldset class="quiz-question">
+                <legend>
+                  ${questionIndex + 1}. ${question.prompt}
+                </legend>
+
+                ${question.options
+                  .map(
+                    (option, optionIndex) => `
+                      <label class="quiz-option">
+                        <input
+                          type="radio"
+                          name="quiz-${questionIndex}"
+                          value="${optionIndex}"
+                        >
+                        <span>${option}</span>
+                      </label>
+                    `
+                  )
+                  .join("")}
+              </fieldset>
+            `
+          )
+          .join("")}
+      </form>
+
+<div class="quiz-actions">
+          <button
+            id="back-to-exploration"
+            class="quiz-back"
+            type="button"
+          >
+            ← Back to exploration
+          </button>
+
+          <button
+            class="button button-dark quiz-submit"
+            type="submit"
+            form="careerlink-quiz"
+          >
+            Submit Quiz
+          </button>
+        </div>
+
+        <p class="quiz-hint">
+          Answer every question before submitting your quiz.
+        </p>
+
+        <div
+          id="quiz-result"
+          class="quiz-result"
+          hidden
+        >
+          <div
+            id="quiz-gauge"
+            class="quiz-gauge"
+            style="--score-angle: 0deg;"
+            aria-live="polite"
+          >
+            <span id="quiz-score">—</span>
+          </div>
+
+          <p
+            id="quiz-feedback"
+            class="quiz-feedback"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </div>
   `;
+
+  const explorationStage =
+    activityContent.querySelector("#exploration-stage");
+
+  const quizStage =
+    activityContent.querySelector("#quiz-stage");
+
+  const startQuizButton =
+    activityContent.querySelector("#start-quiz");
+
+  const quizForm =
+    activityContent.querySelector("#careerlink-quiz");
+  const backButton =
+  activityContent.querySelector("#back-to-exploration");
+
+const quizResult =
+  activityContent.querySelector("#quiz-result");
+
+const quizGauge =
+  activityContent.querySelector("#quiz-gauge");
+
+const quizScore =
+  activityContent.querySelector("#quiz-score");
+
+const quizFeedback =
+  activityContent.querySelector("#quiz-feedback");
+
+  startQuizButton.addEventListener("click", () => {
+    explorationStage.hidden = true;
+    quizStage.hidden = false;
+
+    quizStage.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+
+    quizStage.querySelector("input")?.focus();
+  });
+
+  backButton.addEventListener("click", () => {
+  quizStage.hidden = true;
+  explorationStage.hidden = false;
+
+  explorationStage.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+});
+
+quizResult.hidden = true;
+quizForm.dataset.passed = "false";
+  quizForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const answers = quiz.questions.map((question, questionIndex) => {
+      const selectedAnswer = quizForm.querySelector(
+        `input[name="quiz-${questionIndex}"]:checked`
+      );
+
+      return selectedAnswer
+        ? Number(selectedAnswer.value)
+        : null;
+    });
+
+    quizResult.hidden = false;
+    quizFeedback.textContent = "";
+    quizForm.querySelectorAll(".quiz-option").forEach((option) => {
+  option.classList.remove("is-correct", "is-incorrect");
+});
+
+answers.forEach((answer, questionIndex) => {
+  const selectedInput = quizForm.querySelector(
+    `input[name="quiz-${questionIndex}"]:checked`
+  );
+
+  if (!selectedInput) {
+    return;
+  }
+
+  const selectedOption = selectedInput.closest(".quiz-option");
+  const correctAnswer =
+    answer === quiz.questions[questionIndex].correctIndex;
+
+  selectedOption.classList.add(
+    correctAnswer ? "is-correct" : "is-incorrect"
+  );
+});
+
+    if (answers.some((answer) => answer === null)) {
+  quizForm.dataset.passed = "false";
+
+  quizScore.textContent = "—";
+  quizGauge.style.setProperty("--score-angle", "0deg");
+
+  quizFeedback.textContent =
+    "Your explorer map is not complete yet! Choose an answer for every question, then submit your quiz.";
+
+  return;
+}
+
+    const correctAnswers = answers.filter(
+      (answer, questionIndex) =>
+        answer === quiz.questions[questionIndex].correctIndex
+    ).length;
+
+    const score = correctAnswers / quiz.questions.length;
+    const percentage = Math.round(score * 100);
+    const passed = score >= quiz.passingScore;
+
+    quizForm.dataset.passed = String(passed);
+
+    quizResult.hidden = false;
+quizScore.textContent = `${percentage}%`;
+
+quizGauge.style.setProperty(
+  "--score-angle",
+  `${percentage * 3.6}deg`
+);
+
+if (passed) {
+  quizFeedback.textContent =
+    `Great work, CareerLink explorer! You scored ${percentage}%. You may now complete this module.`;
+} else {
+  quizFeedback.textContent =
+    `You scored ${percentage}%. You need at least ${Math.round(
+      quiz.passingScore * 100
+    )}% to complete this module. Explore CareerLink again and try once more.`;
+}
+  });
 }
 // ===== MODULE 4: DAILY WORK RHYTHM =====
 else if (module.activityType === "timeline") {
